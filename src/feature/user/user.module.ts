@@ -6,7 +6,6 @@ import { User } from "./user.entity";
 import { AuthModule } from "../../core/auth/auth.module";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
-
 @Module({
     imports: [
         PassportModule.register({ defaultStrategy: 'jwt' }),
