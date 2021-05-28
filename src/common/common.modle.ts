@@ -5,4 +5,4 @@ import { CryptoUtil } from "./utils/crypto.util";
     providers: [CryptoUtil],
     exports: [CryptoUtil]
 })
-export class CommonMoudle {}
+export class CommonModle {}

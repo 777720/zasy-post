@@ -12,7 +12,7 @@ import { UserModule } from "../../feature/user/user.module";
                 expiresIn: 3600
             }
         }),
-        forwardRef(() => UserModule)
+        forwardRef(() => UserModule),
     ],
     providers: [ AuthService, AuthStrategy ],
     exports: [ AuthService ]
