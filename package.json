@@ -28,6 +28,7 @@
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.6.15",
     "@nestjs/typeorm": "^7.1.5",
+    "mongodb": "^3.6.9",
     "mongoose": "^5.12.11",
     "passport": "^0.4.1",
     "reflect-metadata": "^0.1.13",

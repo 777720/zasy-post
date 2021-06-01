@@ -1,6 +1,7 @@
-import { HttpException, Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { HttpException, Inject, Injectable, NotFoundException, OnModuleInit } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { MongoRepository } from "typeorm";
+import { ObjectID } from 'mongodb';
 import { User } from "./user.entity";
 import { CryptoUtil } from "../../common/utils/crypto.util";
 
@@ -8,7 +9,7 @@ import { CryptoUtil } from "../../common/utils/crypto.util";
 @Injectable()
 export class UserService implements OnModuleInit{
     constructor(
-        @InjectRepository(User) private readonly userRepo: Repository<User>,
+        @InjectRepository(User) private readonly userRepo: MongoRepository<User>,
         @Inject(CryptoUtil) private readonly cryptoUtil: CryptoUtil
     ) {}
 
@@ -22,11 +23,15 @@ export class UserService implements OnModuleInit{
      * @param password 登录密码
      */
     async login(account: string, password: string): Promise<void> {
+        let userTemp : User | undefined = undefined;
         const user = await this.findOneByAccount(account)
+        if (user.length > 0) {
+            userTemp = user[0]
+        }
         if (!user) {
             throw new HttpException('登陆账号有误！', 406);
         }
-        if (this.cryptoUtil.checkPassword(password, user.password)) {
+        if (this.cryptoUtil.checkPassword(password, userTemp.password)) {
             throw new HttpException('登录密码有误', 406);
         }
 
@@ -38,7 +43,7 @@ export class UserService implements OnModuleInit{
      * @param user 用户信息
      */
     async register(user: User): Promise<void> {
-        const existing = this.findOneByAccount(user.account);
+        const existing = await this.findOneByAccount(user.account);
         if (existing) {
             throw new HttpException('账号已存在', 409);
         }
@@ -81,9 +86,24 @@ export class UserService implements OnModuleInit{
      *
      * @param account 登录账号
      */
-    async findOneByAccount(account: string): Promise<User> {
-        return this.userRepo.findOne({ account });
+    async findOneByAccount(account: string): Promise<User[]> {
+        return await this.userRepo.find({ account: account });
     }
+
+    /**
+     * 通过登录账号id查询用户
+     *
+     * @param id
+     */
+    async findOneById(id: string): Promise<User> {
+        const user = ObjectID.isValid(id) &&  await this.userRepo.findOne(id)
+        if (!user) {
+            throw new NotFoundException();
+        };
+        return user;
+    }
+
+
 
 
     /**

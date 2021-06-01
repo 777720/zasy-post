@@ -38,9 +38,16 @@ export class UserController {
     }
 
     @Get(':id')
-    async  fineOne(@Param() id: string): Promise<IResult> {
-        const data = await this.userService.findOneByAccount(id);
+    async  fineOne(@Param('id') id: string): Promise<IResult> {
+        const data = await this.userService.findOneById(id);
+        console.log('data', data)
         return { code: 200, message: '查询用户成功', data }
+    }
+    @Get('/account/:account')
+    async  findByAccount(@Param('account') account: string): Promise<IResult> {
+        console.log(account)
+        const data = await this.userService.findOneByAccount(account);
+        return { code: 200, message: '查询用户账号成功', data }
     }
 
     @Get()

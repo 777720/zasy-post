@@ -14,7 +14,7 @@ export class AuthService {
         return this.jwtService.sign(payload);
     }
 
-    async validateUser(payload: { account: string }): Promise<User> {
+    async validateUser(payload: { account: string }): Promise<User[]> {
         return await this.userService.findOneByAccount(payload.account)
     }
 
