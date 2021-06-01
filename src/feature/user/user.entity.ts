@@ -1,4 +1,5 @@
 import { Column, Entity, ObjectIdColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { IThing } from "../../common/interfaces/thing.interface";
 
 
 @Entity('user')
@@ -14,6 +15,9 @@ export class User {
 
     @Column()
     name: string;
+
+    @Column()
+    things: IThing[];
 
 
     @Column({
